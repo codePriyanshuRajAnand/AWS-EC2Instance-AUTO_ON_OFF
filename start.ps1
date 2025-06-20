@@ -4,12 +4,12 @@
 
 
 function getState ($instanceId) {
-    $instanceState = (Get-EC2Instance -InstanceId $instanceId -ProfileName NonProduction -Region us-east-1).Instances.State.Name
+    $instanceState = (Get-EC2Instance -InstanceId $instanceId -ProfileName <PROFILE_NAME> -Region us-east-1).Instances.State.Name
     return $instanceState
 }
 
 function getInstanceName($instanceId) {
-    $instanceName = (Get-EC2Instance -InstanceID $instanceId -ProfileName NonProduction -Region us-east-1).Instances.Tags | Where-Object { $_.Key -eq "Name" } | Select-Object -ExpandProperty Value
+    $instanceName = (Get-EC2Instance -InstanceID $instanceId -ProfileName <PROFILE_NAME> -Region us-east-1).Instances.Tags | Where-Object { $_.Key -eq "Name" } | Select-Object -ExpandProperty Value
     return $instanceName
 }
 
@@ -28,11 +28,11 @@ foreach ($instance in $instances) {
     Write-Host "Current State of Server - $instanceName ($instance) is $instanceState"
     if($instanceState -ne "running"){
         Write-Host "Proceeding to Start $instanceName ($instance)..."
-        $isStarted = (Start-EC2Instance -InstanceId $instance -Force -ProfileName NonProduction -Region us-east-1).Instances.State.Name
+        $isStarted = (Start-EC2Instance -InstanceId $instance -Force -ProfileName <PROFILE_NAME> -Region us-east-1).Instances.State.Name
         while ($isStarted -ne "running"){
             Start-Sleep 10
             Write-Host "."
-            $isStarted  = (Get-EC2Instance -InstanceId $instance -ProfileName NonProduction -Region us-east-1).Instances.State.Name
+            $isStarted  = (Get-EC2Instance -InstanceId $instance -ProfileName <PROFILE_NAME> -Region us-east-1).Instances.State.Name
         }
         Write-Host "$instanceName ($instance) is UP & Running Now"
         Write-Host "Thank you ..."
