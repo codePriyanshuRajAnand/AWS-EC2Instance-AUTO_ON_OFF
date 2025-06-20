@@ -4,12 +4,12 @@
 
 
 function getState ($instanceId) {
-    $instanceState = (Get-EC2Instance -InstanceId $instanceId -ProfileName NonProduction -Region us-east-1).Instances.State.Name
+    $instanceState = (Get-EC2Instance -InstanceId $instanceId -ProfileName <PROFILE_NAME> -Region us-east-1).Instances.State.Name
     return $instanceState
 }
 
 function getInstanceName($instanceId) {
-    $instanceName = (Get-EC2Instance -InstanceID $instanceId -ProfileName NonProduction -Region us-east-1).Instances.Tags | Where-Object { $_.Key -eq "Name" } | Select-Object -ExpandProperty Value
+    $instanceName = (Get-EC2Instance -InstanceID $instanceId -ProfileName <PROFILE_NAME> -Region us-east-1).Instances.Tags | Where-Object { $_.Key -eq "Name" } | Select-Object -ExpandProperty Value
     return $instanceName
 }
 
@@ -72,11 +72,11 @@ foreach ($instance in $instances) {
     Write-Host "Current State of Server - $instanceName ($instance) is $instanceState"
     if($instanceState -ne "stopped"){
         Write-Host "Proceeding to Stop $instanceName ($instance)..."
-        $isStopped = (Stop-EC2Instance -InstanceId $instance -Force -ProfileName NonProduction -Region us-east-1).Instances.State.Name
+        $isStopped = (Stop-EC2Instance -InstanceId $instance -Force -ProfileName <PROFILE_NAME> -Region us-east-1).Instances.State.Name
         while ($isStopped -ne "stopped"){
             Start-Sleep 10
             Write-Host "."
-            $isStopped  = (Get-EC2Instance -InstanceId $instance -ProfileName NonProduction -Region us-east-1).Instances.State.Name
+            $isStopped  = (Get-EC2Instance -InstanceId $instance -ProfileName <PROFILE_NAME> -Region us-east-1).Instances.State.Name
         }
         Write-Host "$instanceName ($instance) is Stopped Now"
         Write-Host "Thank you ..."
